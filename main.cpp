@@ -7,7 +7,10 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include "nnet.h"
+
 using namespace af;
+
 
 int main(int argc, char *argv[])
 {
@@ -63,6 +66,16 @@ int main(int argc, char *argv[])
         sort(vals, inds, A);
         af_print(vals);
         af_print(inds);
+
+
+        std::vector<int> layer_dims;
+        layer_dims.push_back(4);
+        layer_dims.push_back(3);
+        layer_dims.push_back(1);
+
+        nn::deepnet nn(layer_dims);
+
+        nn.print();
 
     } catch (af::exception& e) {
 
