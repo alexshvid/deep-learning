@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "nnet.h"
+#include "deepnet.h"
 
 using namespace af;
 
@@ -22,60 +22,12 @@ int main(int argc, char *argv[])
         af::setDevice(device);
         af::info();
 
-        printf("Create a 5-by-3 matrix of random floats on the GPU\n");
-        array A = randu(5,3, f32);
-        af_print(A);
+        nn::deepnet net(4);
 
-        printf("Element-wise arithmetic\n");
-        array B = sin(A) + 1.5;
-        af_print(B);
+        net.add_layer(3, nn::kTanh);
+        net.add_layer(1, nn::kSigmoid);
 
-        printf("Negate the first three elements of second column\n");
-        B(seq(0, 2), 1) = B(seq(0, 2), 1) * -1;
-        af_print(B);
-
-        printf("Fourier transform the result\n");
-        array C = fft(B);
-        af_print(C);
-
-        printf("Grab last row\n");
-        array c = C.row(end);
-        af_print(c);
-
-        printf("Scan Test\n");
-        dim4 dims(16, 4, 1, 1);
-        array r = constant(2, dims);
-        af_print(r);
-
-        printf("Scan\n");
-        array S = af::scan(r, 0, AF_BINARY_MUL);
-        af_print(S);
-
-        printf("Create 2-by-3 matrix from host data\n");
-        float d[] = { 1, 2, 3, 4, 5, 6 };
-        array D(2, 3, d, afHost);
-        af_print(D);
-
-        printf("Copy last column onto first\n");
-        D.col(0) = D.col(end);
-        af_print(D);
-
-        // Sort A
-        printf("Sort A and print sorted array and corresponding indices\n");
-        array vals, inds;
-        sort(vals, inds, A);
-        af_print(vals);
-        af_print(inds);
-
-
-        std::vector<int> layer_dims;
-        layer_dims.push_back(4);
-        layer_dims.push_back(3);
-        layer_dims.push_back(1);
-
-        nn::deepnet nn(layer_dims);
-
-        nn.print();
+        net.print();
 
     } catch (af::exception& e) {
 
