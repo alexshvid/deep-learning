@@ -9,6 +9,13 @@
 
 namespace nn {
 
+    struct parameters {
+
+        af::array W;
+        float b;
+
+    };
+
     struct forward_propagation {
 
         af::array Z;
@@ -26,20 +33,24 @@ namespace nn {
 
     struct layer {
 
+        int i;
         int n;
-        af::array W;
-        float b;
         activation g;
 
-        layer& prev;
+        layer* prev;
 
+        parameters params;
         forward_propagation  forward;
         backward_propagation backward;
 
-        layer(int n) : n(n), W(af::array()), b(0.0f), g(kRelu), prev(*this) {
+        layer(int n) : i(0), n(n), g(kInput), prev(this) {
+            params.W = af::array();
+            params.b = 0.0f;
         }
 
-        layer(int n, activation g, layer& prev) : n(n), W(af::randu(n, prev.n, f32) * 0.01), b(0.0f), g(g), prev(prev) {
+        layer(layer* prev, int n, activation g) : i(prev->i+1), n(n), g(g), prev(prev) {
+            params.W = af::randu(n, prev->n, f32) * 0.01;
+            params.b = 0.0f;
         }
 
     };
@@ -50,32 +61,30 @@ namespace nn {
 
         deepnet(int x_n) : input(x_n) {}
 
+        virtual ~deepnet();
+
         void add_layer(int n, activation g);
 
         void train(af::array& X, af::array& Y, int num_iterations, float learning_rate);
 
-        void print() {
-            for (auto &i : layers) {
-                af_print(i.W);
-            }
-        }
+        void print();
 
     private:
 
-        layer& prev();
+        layer* prev();
 
-        af::array model(af::array& X);
+        af::array forward_propagate(af::array& X);
 
         float cost(af::array& AL, af::array& Y);
 
-        af::array linear_backward(af::array& dZ, layer& layer);
+        void linear_backward(af::array& dZ, layer* layer);
 
-        void backward(af::array& AL, af::array& Y);
+        void backward_propagate(af::array& AL, af::array& Y);
 
         void update_parameters(float learning_rate);
 
         layer input;
-        std::vector<layer> layers;
+        std::vector<layer*> layers;
 
     };
 

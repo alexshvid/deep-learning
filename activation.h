@@ -10,11 +10,12 @@
 namespace nn {
 
     enum activation {
-        kSigmoid = 0,
-        kRelu = 1,
-        kLeakyRelu = 2,
-        kTanh = 3,
-        kHardTanh = 4
+        kInput = 0,
+        kSigmoid = 1,
+        kRelu = 2,
+        kLeakyRelu = 3,
+        kTanh = 4,
+        kHardTanh = 5
     };
 
     af::array activation_forward(activation a, const af::array &Z);

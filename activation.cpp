@@ -18,25 +18,23 @@ af::array nn::activation_forward(activation a, const af::array &Z)  {
         case kHardTanh:
             return af::clamp(Z, -1, 1);
         default:
-            return af::array();
-
+            return Z;
     }
 }
 
 af::array nn::activation_backward(activation a, const af::array &dA, const af::array &A)  {
     switch (a) {
         case kSigmoid:
-            return dA * (1 - A * A);
+            return dA * A * (1 - A);
         case kRelu:
-            return (dA > 0);
+            return A;
         case kLeakyRelu:
-            return (dA > 0);
+            return A;
         case kTanh:
-            return 1 - af::tanh(A) ^ 2;
+            return dA * (1 - A * A);
         case kHardTanh:
-            return 1 - af::clamp(A, -1, 1) ^ 2;
+            return dA * (1 - A * A);
         default:
-            return af::array();
-
+            return A;
     }
 }

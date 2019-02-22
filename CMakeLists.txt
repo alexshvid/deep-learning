@@ -15,11 +15,11 @@ endif()
 
 
 if(ArrayFire_CUDA_FOUND)
-  add_executable(deepnn_cuda main.cpp deepnet.cpp)
+  add_executable(deepnn_cuda main.cpp deepnet.cpp activation.cpp activation.h)
   target_link_libraries(deepnn_cuda ArrayFire::afcuda)
 endif()
 
 if(ArrayFire_OpenCL_FOUND)
-  add_executable(deepnn_opencl main.cpp deepnet.cpp)
+  add_executable(deepnn_opencl main.cpp deepnet.cpp activation.cpp activation.h)
   target_link_libraries(deepnn_opencl ArrayFire::afopencl)
 endif()
